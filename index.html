@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>White Tiger Dashboard - Enterprise Management</title>
+  
+  <!-- Inter Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#e8f2fe',
+              100: '#d1e6fd',
+              500: '#0570e9',
+              600: '#045bbd',
+              700: '#034694'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js & Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-white text-slate-900 min-h-screen flex flex-col antialiased">
+
+  <!-- ==================== AUTHENTICATION OVERLAY / VIEWS ==================== -->
+  <div id="auth-view-overlay" class="fixed inset-0 z-50 bg-white flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
+    <div class="w-full max-w-md my-auto">
+      
+      <!-- Brand Header -->
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-[#0570e9] text-white flex items-center justify-center shadow-lg shadow-blue-500/25 mx-auto mb-3">
+          <!-- White Tiger Stylized Crest SVG -->
+          <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12c0 2.85 1.2 5.41 3.12 7.24L7 17v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2l1.88 2.24C20.8 17.41 22 14.85 22 12c0-5.52-4.48-10-10-10z"/>
+            <path d="M8 9l1 2"/>
+            <path d="M16 9l-1 2"/>
+            <circle cx="9" cy="10" r="1" fill="currentColor"/>
+            <circle cx="15" cy="10" r="1" fill="currentColor"/>
+            <path d="M12 12v3"/>
+            <path d="M10 15l2 1 2-1"/>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">White Tiger Dashboard</h2>
+        <p class="text-xs text-slate-500 mt-1">Enterprise Asset, Vault, & Salary Management</p>
+      </div>
+
+      <!-- CARD 1: SIGN IN -->
+      <div id="auth-card-login" class="tiger-card bg-white p-6 sm:p-8 shadow-xl border border-slate-200">
+        <div class="mb-5">
+          <h3 class="text-base font-bold text-slate-900">Sign in to your account</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Enter work credentials to access the financial portal</p>
+        </div>
+
+        <div id="login-error-msg" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium"></div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
+            <div class="relative">
+              <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="email" id="login-email" required placeholder="admin@whitetiger.internal"
+                class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-slate-900 focus:bg-white focus:border-[#0570e9] focus:ring-2 focus:ring-blue-100 outline-none transition-all"/>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-semibold text-slate-700">Password</label>
+              <a href="#" id="link-to-forgot" class="text-xs font-semibold text-[#0570e9] hover:underline">
+                Forgot password?
+              </a>
+            </div>
+            <div class="relative">
+              <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="password" id="login-password" required placeholder="••••••••"
+                class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-slate-900 focus:bg-white focus:border-[#0570e9] focus:ring-2 focus:ring-blue-100 outline-none transition-all"/>
+              <button type="button" id="toggle-password-btn" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full py-2.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Sign In</span>
+          </button>
+        </form>
+
+        <!-- Quick Demo Accounts -->
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">Quick Demo Access</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="quick-login-admin"
+              class="p-2.5 rounded-xl border border-blue-200 bg-[#e8f2fe]/60 hover:bg-[#e8f2fe] text-left transition-colors">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-[#0570e9]">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                <span>Admin Login</span>
+              </div>
+              <p class="text-[10px] text-slate-500 truncate mt-0.5">admin@whitetiger.internal</p>
+              <p class="text-[9px] text-slate-400 font-mono">Pass: admin123</p>
+            </button>
+
+            <button type="button" id="quick-login-user"
+              class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-colors">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                <span>User Login</span>
+              </div>
+              <p class="text-[10px] text-slate-500 truncate mt-0.5">alex@whitetiger.internal</p>
+              <p class="text-[9px] text-slate-400 font-mono">Pass: tiger123</p>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CARD 2: FORGOT PASSWORD - STEP 1 -->
+      <div id="auth-card-forgot-1" class="tiger-card bg-white p-6 sm:p-8 shadow-xl border border-slate-200 hidden">
+        <div class="mb-5">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="key-round" class="w-5 h-5 text-[#0570e9]"></i>
+            Reset your password
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Enter your email address to receive a recovery code</p>
+        </div>
+
+        <div id="forgot-error-msg" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium"></div>
+
+        <form id="forgot-request-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Registered Email Address</label>
+            <input type="email" id="forgot-email" required placeholder="name@whitetiger.internal"
+              class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:bg-white focus:border-[#0570e9] focus:ring-2 focus:ring-blue-100 outline-none transition-all"/>
+          </div>
+
+          <button type="submit"
+            class="w-full py-2.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Send Reset Code</span>
+          </button>
+
+          <div class="text-center pt-2">
+            <a href="#" id="back-to-login-btn-1" class="text-xs font-semibold text-slate-500 hover:text-[#0570e9] inline-flex items-center gap-1">
+              &larr; Back to Sign In
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- CARD 3: FORGOT PASSWORD - STEP 2 -->
+      <div id="auth-card-forgot-2" class="tiger-card bg-white p-6 sm:p-8 shadow-xl border border-slate-200 hidden">
+        <div class="mb-4">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-5 h-5 text-[#0570e9]"></i>
+            Create New Password
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Reset code sent to <span id="reset-email-display" class="font-semibold text-slate-800"></span>
+          </p>
+        </div>
+
+        <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-2.5">
+          <i data-lucide="info" class="w-4 h-4 text-[#0570e9] shrink-0 mt-0.5"></i>
+          <div class="text-xs text-slate-700">
+            <span class="font-bold text-[#0570e9]">Demo Recovery Code:</span>
+            <span id="demo-code-display" class="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-blue-300 ml-1">123456</span>
+          </div>
+        </div>
+
+        <div id="reset-error-msg" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium"></div>
+
+        <form id="forgot-reset-form" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">6-Digit Verification Code</label>
+            <input type="text" id="reset-code" required maxlength="6"
+              class="w-full text-center tracking-widest font-mono text-sm font-bold bg-slate-50 border border-slate-200 rounded-xl py-2 text-slate-900 focus:bg-white focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">New Password (min 6 chars)</label>
+            <input type="password" id="reset-new-password" required minlength="6" placeholder="••••••••"
+              class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:bg-white focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Confirm New Password</label>
+            <input type="password" id="reset-confirm-password" required minlength="6" placeholder="••••••••"
+              class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:bg-white focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <button type="submit"
+            class="w-full py-2.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all mt-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Save Password & Return to Login</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD WRAPPER ==================== -->
+  <div id="main-dashboard-wrapper" class="flex-1 flex flex-col">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        
+        <!-- Brand & Tiger Emblem -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0570e9] text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+            <!-- White Tiger Crest SVG -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.48 2 2 6.48 2 12c0 2.85 1.2 5.41 3.12 7.24L7 17v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2l1.88 2.24C20.8 17.41 22 14.85 22 12c0-5.52-4.48-10-10-10z"/>
+              <path d="M8 9l1 2"/>
+              <path d="M16 9l-1 2"/>
+              <circle cx="9" cy="10" r="1" fill="currentColor"/>
+              <circle cx="15" cy="10" r="1" fill="currentColor"/>
+              <path d="M12 12v3"/>
+              <path d="M10 15l2 1 2-1"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-bold text-lg text-slate-900 tracking-tight">White Tiger</h1>
+              <span class="text-xs bg-[#e8f2fe] text-[#0570e9] font-bold px-2 py-0.5 rounded-full border border-blue-200">ROC SYSTEM</span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium">Enterprise Management Suite</p>
+          </div>
+        </div>
+
+        <!-- Role Switcher & User Profile -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Role Switcher -->
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 text-xs">
+            <span class="text-[11px] font-semibold text-slate-500 pl-2 pr-1 hidden sm:inline">Akses:</span>
+            <button id="role-btn-user" class="role-switch-btn">User</button>
+            <button id="role-btn-admin" class="role-switch-btn active">Admin</button>
+          </div>
+
+          <!-- User Profile Pill -->
+          <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+            <img id="topbar-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+                 alt="Avatar" class="w-8 h-8 rounded-full border border-slate-200 object-cover"/>
+            <div class="hidden lg:block text-left">
+              <p id="topbar-user-name" class="text-xs font-bold text-slate-800 leading-tight">Administrator</p>
+              <p id="active-role-text" class="text-[10px] text-[#0570e9] font-semibold">Administrator</p>
+            </div>
+          </div>
+
+          <!-- Log Out Button -->
+          <button id="topbar-logout-btn" title="Keluar / Sign Out"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-semibold transition-all">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Log Out</span>
+          </button>
+
+        </div>
+
+      </div>
+    </header>
+
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col md:flex-row gap-6">
+
+      <!-- Sidebar Navigation -->
+      <aside class="w-full md:w-64 shrink-0">
+        <div class="tiger-card p-3 space-y-1 sticky top-22 bg-white">
+          
+          <div class="px-3 py-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            Menu Utama
+          </div>
+
+          <!-- Tab 1: Dashboard Keuangan (Gambar 5) -->
+          <button class="nav-tab active w-full" data-tab="keuangan">
+            <i data-lucide="pie-chart" class="w-4 h-4"></i>
+            <span>Dashboard Keuangan</span>
+          </button>
+
+          <!-- Tab 2: Hasil Gaji & Setoran (Gambar 3) -->
+          <button class="nav-tab w-full" data-tab="penggajian">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span>Hasil Gaji & Setoran</span>
+          </button>
+
+          <!-- Tab 3: Data Uang ROC Brangkas (Gambar 1) -->
+          <button class="nav-tab w-full" data-tab="brangkas">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            <span>Uang ROC Brangkas</span>
+          </button>
+
+          <!-- Tab 4: Monitoring Setoran (Gambar 2) -->
+          <button class="nav-tab w-full" data-tab="monitoring">
+            <i data-lucide="calendar-check-2" class="w-4 h-4"></i>
+            <span>Monitoring Setoran</span>
+          </button>
+
+          <!-- Tab 5: Struktur Organisasi (Gambar 4) -->
+          <button class="nav-tab w-full" data-tab="anggota">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Struktur & Anggota</span>
+          </button>
+
+          <!-- Tab 6: Arsip Berkas -->
+          <button class="nav-tab w-full" data-tab="assets">
+            <i data-lucide="folder-archive" class="w-4 h-4"></i>
+            <span>Arsip Berkas & Media</span>
+          </button>
+
+          <!-- Tab 7: Tarif & Pengaturan -->
+          <button class="nav-tab w-full" data-tab="settings">
+            <i data-lucide="settings-2" class="w-4 h-4"></i>
+            <span>Tarif Gaji & Sistem</span>
+          </button>
+
+          <!-- Quick Info Box on Rates -->
+          <div class="mt-5 p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 text-xs space-y-1.5">
+            <div class="font-bold text-[#0570e9] flex items-center gap-1">
+              <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
+              <span>Ketentuan Gaji Aktif</span>
+            </div>
+            <ul class="text-[11px] text-slate-600 space-y-1 font-mono">
+              <li>• Batu Mentah: <strong>$75 / 100pcs</strong> (Bersih)</li>
+              <li>• Emas: <strong>$1.3 / pcs</strong> (Bersih)</li>
+              <li>• Tembaga: <strong>$1.5 / pcs</strong> (Bersih)</li>
+              <li>• Besi: <strong>$1.0 / pcs</strong> (Bersih)</li>
+              <li>• Bluni: <strong>$1.5 / pcs</strong> (UANG ROC)</li>
+            </ul>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Main Dynamic Views -->
+      <main class="flex-1 min-w-0 space-y-6">
+
+        <!-- ==================== VIEW 1: DASHBOARD KEUANGAN ROC (Gambar 5) ==================== -->
+        <section id="view-keuangan" class="view-section space-y-6">
+          
+          <!-- Top Header Strip matching Excel Image 5 -->
+          <div class="tiger-card overflow-hidden bg-white border border-slate-200">
+            <div class="bg-[#0570e9] text-white px-5 py-3 flex items-center justify-between">
+              <h2 class="font-bold text-sm tracking-wide flex items-center gap-2">
+                <i data-lucide="landmark" class="w-5 h-5"></i>
+                DASHBOARD KEUANGAN WHITE TIGER
+              </h2>
+              <span class="text-xs bg-white/20 px-2 py-0.5 rounded font-mono font-semibold">ROC RECONCILIATION</span>
+            </div>
+
+            <!-- Metric Summary Row (Gambar 5) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-x divide-y sm:divide-y-0 divide-slate-100 bg-slate-50/50 text-center">
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">TOTAL PEMASUKAN</span>
+                <span id="kpi-dash-pemasukan" class="font-mono font-bold text-emerald-600 text-sm">$0</span>
+              </div>
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">TOTAL PENGELUARAN</span>
+                <span id="kpi-dash-pengeluaran" class="font-mono font-bold text-rose-600 text-sm">$0</span>
+              </div>
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">TRX MASUK</span>
+                <span id="kpi-dash-trx-masuk" class="font-mono font-bold text-slate-800 text-sm">0</span>
+              </div>
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">TRX KELUAR</span>
+                <span id="kpi-dash-trx-keluar" class="font-mono font-bold text-slate-800 text-sm">0</span>
+              </div>
+              <div class="p-3 bg-blue-50/50">
+                <span class="text-[10px] font-bold text-[#0570e9] uppercase block">TOTAL KEUNTUNGAN</span>
+                <span id="kpi-dash-keuntungan" class="font-mono font-bold text-[#0570e9] text-sm">$0</span>
+              </div>
+              <div class="p-3 bg-blue-50/50">
+                <span class="text-[10px] font-bold text-[#0570e9] uppercase block">% KEUNTUNGAN</span>
+                <span id="kpi-dash-persen" class="font-mono font-bold text-[#0570e9] text-sm">0%</span>
+              </div>
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-rose-500 uppercase block">UANG HILANG</span>
+                <span id="kpi-dash-uang-hilang" class="font-mono font-bold text-rose-600 text-sm">$0</span>
+              </div>
+              <div class="p-3">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">TANPA KET.</span>
+                <span id="kpi-dash-tanpa-ket" class="font-mono font-bold text-slate-700 text-sm">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Grid (Gambar 5) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Donut Chart: Analisis Keuangan ROC -->
+            <div class="tiger-card p-5 bg-white flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-900">Analisis Keuangan ROC</h3>
+                  <p class="text-xs text-slate-400">Komposisi alokasi pengeluaran & aktivitas ROC</p>
+                </div>
+                <span class="tiger-badge tiger-badge-primary">Distribusi</span>
+              </div>
+              <div class="h-64 relative flex items-center justify-center">
+                <canvas id="chart-analisis-roc"></canvas>
+              </div>
+            </div>
+
+            <!-- Bar Chart: Transaksi Masuk & Keluar -->
+            <div class="tiger-card p-5 bg-white flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-900">Transaksi Masuk & Keluar</h3>
+                  <p class="text-xs text-slate-400">Perbandingan frekuensi volume transaksi</p>
+                </div>
+                <span class="tiger-badge tiger-badge-primary">Volume</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="chart-trx-in-out"></canvas>
+              </div>
+            </div>
+
+            <!-- Bar Chart: Transaksi Pembelian ke Badside (HCMC) -->
+            <div class="tiger-card p-5 bg-white flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-900">Transaksi Pembelian ke Badside</h3>
+                  <p class="text-xs text-slate-400">Rekapitulasi transaksi keluar ke pihak eksternal (e.g. HCMC)</p>
+                </div>
+                <span class="tiger-badge tiger-badge-primary">Badside Logistik</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="chart-pembelian-badside"></canvas>
+              </div>
+            </div>
+
+            <!-- Line Chart: Keuntungan Mingguan -->
+            <div class="tiger-card p-5 bg-white flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-900">Tren Keuntungan Mingguan</h3>
+                  <p class="text-xs text-slate-400">Laju akumulasi profit bersih organisasi</p>
+                </div>
+                <span class="tiger-badge tiger-badge-primary">Trend</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="chart-keuntungan-mingguan"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 2: HASIL PENGGAJIAN & SETORAN (Gambar 3) ==================== -->
+        <section id="view-penggajian" class="view-section hidden space-y-6">
+          
+          <!-- Summary Metrics Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">BATU MENTAH</span>
+              <span id="kpi-total-batu" class="font-mono font-bold text-xs text-[#0570e9]">0 Pkt</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">TOTAL EMAS</span>
+              <span id="kpi-total-emas" class="font-mono font-bold text-xs text-amber-600">0 pcs</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">TEMBAGA</span>
+              <span id="kpi-total-tembaga" class="font-mono font-bold text-xs text-orange-600">0 pcs</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">BESI</span>
+              <span id="kpi-total-besi" class="font-mono font-bold text-xs text-slate-700">0 pcs</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">BLUNI KANTOR</span>
+              <span id="kpi-total-bluni" class="font-mono font-bold text-xs text-sky-600">0 pcs</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-emerald-50 border-emerald-200">
+              <span class="text-[10px] font-bold text-emerald-800 block">GAJI BERSIH</span>
+              <span id="kpi-total-gaji-bersih" class="font-mono font-bold text-xs text-emerald-700">$0</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-sky-50 border-sky-200">
+              <span class="text-[10px] font-bold text-sky-800 block">GAJI ROC</span>
+              <span id="kpi-total-gaji-roc" class="font-mono font-bold text-xs text-sky-700">$0</span>
+            </div>
+            <div class="tiger-card p-3 text-center bg-white">
+              <span class="text-[10px] font-bold text-slate-400 block">COMPLETED</span>
+              <span id="kpi-setoran-completed" class="font-mono font-bold text-xs text-emerald-600">0 / 0</span>
+            </div>
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="tiger-card p-4 bg-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative w-64">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-setoran" placeholder="Cari nama anggota..."
+                  class="w-full text-xs pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-[#0570e9]"/>
+              </div>
+
+              <!-- Status Filter Pills -->
+              <div id="filter-setoran-status" class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+                <button data-status="ALL" class="px-3 py-1 rounded font-semibold bg-[#0570e9] text-white">Semua</button>
+                <button data-status="COMPLETED" class="px-3 py-1 rounded font-semibold bg-white text-slate-600">Completed</button>
+                <button data-status="BELUM SETORAN" class="px-3 py-1 rounded font-semibold bg-white text-slate-600">Belum Setor</button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="btn-export-setoran"
+                class="px-3 py-1.5 border border-slate-200 hover:border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 bg-white">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export CSV</span>
+              </button>
+
+              <button id="btn-add-setoran"
+                class="px-4 py-1.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-500/20">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                <span>Input Setoran</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Main Table matching Image 3 -->
+          <div class="tiger-card bg-white overflow-hidden border border-slate-200">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#1b4d3e] text-white text-[11px] font-bold uppercase tracking-wider">
+                    <th class="excel-th text-center">No</th>
+                    <th class="excel-th">Nama Anggota</th>
+                    <th class="excel-th text-center">Batu Mentah (Pkt)</th>
+                    <th class="excel-th text-center">Emas (Pcs)</th>
+                    <th class="excel-th text-center">Tembaga (Pcs)</th>
+                    <th class="excel-th text-center">Besi (Pcs)</th>
+                    <th class="excel-th text-center">Bluni (Pcs)</th>
+                    <th class="excel-th text-center bg-emerald-950">Total Setoran</th>
+                    <th class="excel-th text-right">Gaji Batu</th>
+                    <th class="excel-th text-right">Gaji Emas</th>
+                    <th class="excel-th text-right">Gaji Tembaga</th>
+                    <th class="excel-th text-right">Gaji Besi</th>
+                    <th class="excel-th text-right bg-sky-900">Gaji Bluni</th>
+                    <th class="excel-th text-right bg-emerald-800">Gaji Bersih</th>
+                    <th class="excel-th text-right bg-sky-950">Gaji ROC</th>
+                    <th class="excel-th text-center bg-blue-900">Gaji Bersih & ROC</th>
+                    <th class="excel-th text-center">Status</th>
+                    <th class="excel-th text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="penggajian-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered by js/penggajian.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 3: UANG ROC BRANGKAS (Gambar 1) ==================== -->
+        <section id="view-brangkas" class="view-section hidden space-y-6">
+          
+          <!-- Brangkas KPI Card Strip matching Image 1 Header -->
+          <div class="tiger-card p-4 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-xl shadow-md">
+            <div class="flex items-center justify-between pb-3 border-b border-white/20 mb-3">
+              <h2 class="font-black text-sm tracking-widest flex items-center gap-2">
+                <i data-lucide="vault" class="w-5 h-5"></i>
+                DATA UANG ROC BRANGKAS
+              </h2>
+              <span class="text-xs bg-white/20 px-2.5 py-0.5 rounded-full font-mono">INTERNAL VAULT</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+              <div class="bg-black/15 p-2.5 rounded-lg">
+                <span class="text-[10px] uppercase font-bold text-teal-100 block">TOTAL PEMASUKAN ROC</span>
+                <span id="brangkas-kpi-masuk" class="font-mono text-base font-black">$0</span>
+              </div>
+              <div class="bg-black/15 p-2.5 rounded-lg">
+                <span class="text-[10px] uppercase font-bold text-teal-100 block">TOTAL PENGELUARAN ROC</span>
+                <span id="brangkas-kpi-keluar" class="font-mono text-base font-black">$0</span>
+              </div>
+              <div class="bg-black/15 p-2.5 rounded-lg">
+                <span class="text-[10px] uppercase font-bold text-teal-100 block">TRX MASUK</span>
+                <span id="brangkas-kpi-trx-masuk" class="font-mono text-base font-black">0</span>
+              </div>
+              <div class="bg-black/15 p-2.5 rounded-lg">
+                <span class="text-[10px] uppercase font-bold text-teal-100 block">TRX KELUAR</span>
+                <span id="brangkas-kpi-trx-keluar" class="font-mono text-base font-black">0</span>
+              </div>
+              <div class="bg-black/25 p-2.5 rounded-lg border border-white/25">
+                <span class="text-[10px] uppercase font-bold text-yellow-300 block">TOTAL KEUNTUNGAN</span>
+                <span id="brangkas-kpi-untung" class="font-mono text-base font-black">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="tiger-card p-4 bg-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="relative w-64">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-brangkas" placeholder="Cari aktivitas / nama..."
+                  class="w-full text-xs pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-[#0570e9]"/>
+              </div>
+
+              <select id="filter-brangkas-action" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none">
+                <option value="ALL">Semua Aksi</option>
+                <option value="PENJUALAN">PENJUALAN</option>
+                <option value="PEMBELIAN">PEMBELIAN</option>
+                <option value="REWARD">REWARD</option>
+                <option value="ACTIVITY">ACTIVITY</option>
+                <option value="GAJI">GAJI</option>
+                <option value="CUCI UANG">CUCI UANG</option>
+                <option value="SETORAN">SETORAN</option>
+                <option value="TANPA KET.">TANPA KET.</option>
+              </select>
+            </div>
+
+            <button id="btn-add-brangkas-trx"
+              class="px-4 py-2 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-500/20">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Tambah Transaksi Kas</span>
+            </button>
+          </div>
+
+          <!-- Brangkas Table matching Image 1 -->
+          <div class="tiger-card bg-white overflow-hidden border border-slate-200">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-teal-700 text-white text-[11px] font-bold uppercase tracking-wider">
+                    <th class="excel-th">Tanggal</th>
+                    <th class="excel-th">Nama</th>
+                    <th class="excel-th">Aktivitas / Keterangan</th>
+                    <th class="excel-th text-right">Masuk ROC</th>
+                    <th class="excel-th text-right">Keluar ROC</th>
+                    <th class="excel-th text-right bg-teal-900">Saldo ROC</th>
+                    <th class="excel-th text-center">Action</th>
+                    <th class="excel-th text-center">Penjualan ke Badside</th>
+                    <th class="excel-th text-center">Pembelian ke Badside</th>
+                    <th class="excel-th text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="brangkas-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered by js/brangkas.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 4: MONITORING SETORAN PER TANGGAL (Gambar 2) ==================== -->
+        <section id="view-monitoring" class="view-section hidden space-y-6">
+          
+          <div class="tiger-card p-4 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                <i data-lucide="calendar-range" class="w-5 h-5 text-[#0570e9]"></i>
+                Monitoring Status Setoran Anggota Per Periode
+              </h2>
+              <p class="text-xs text-slate-400">Klik langsung pada lencana status di bawah untuk mengubah status Completed / Belum Setoran</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-right pr-3 border-r border-slate-200">
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Selesai Periode Terakhir</span>
+                <span id="monitoring-completed-count" class="font-mono text-sm font-bold text-emerald-600">0 / 0</span>
+              </div>
+
+              <button id="btn-add-period"
+                class="px-3 py-1.5 border border-[#0570e9] text-[#0570e9] hover:bg-blue-50 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i>
+                <span>Tambah Tanggal Periode</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tiger-card p-3 bg-white">
+            <div class="relative max-w-sm mb-3">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="search-monitoring" placeholder="Cari nama anggota..."
+                class="w-full text-xs pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none"/>
+            </div>
+
+            <!-- Matrix Table matching Image 2 -->
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+              <table class="w-full text-left border-collapse">
+                <thead id="monitoring-table-head">
+                  <!-- Rendered by js/monitoring.js -->
+                </thead>
+                <tbody id="monitoring-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered by js/monitoring.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 5: STRUKTUR ORGANISASI & ANGGOTA (Gambar 4) ==================== -->
+        <section id="view-anggota" class="view-section hidden space-y-6">
+          
+          <div class="tiger-card p-4 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-[#0570e9]"></i>
+                Daftar Anggota & Struktur Organisasi White Tiger
+              </h2>
+              <p class="text-xs text-slate-400">Hierarki jabatan resmi, status keaktifan, dan rekam jejak cuti anggota</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  Aktif: <span id="anggota-aktif-count">0</span>
+                </span>
+                <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 font-bold border border-rose-200">
+                  Cuti: <span id="anggota-cuti-count">0</span>
+                </span>
+              </div>
+
+              <button id="btn-add-anggota"
+                class="px-3.5 py-1.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-500/20">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                <span>Tambah Anggota</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="tiger-card p-3 bg-white flex flex-wrap items-center gap-3">
+            <div class="relative w-64">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="search-anggota" placeholder="Cari nama, jabatan, keterangan..."
+                class="w-full text-xs pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:border-[#0570e9]"/>
+            </div>
+
+            <select id="filter-anggota-jabatan" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
+              <option value="ALL">Semua Jabatan</option>
+              <option value="PRESIDEN">PRESIDEN</option>
+              <option value="VICE PRESIDEN">VICE PRESIDEN</option>
+              <option value="The Sergeant at Arms">The Sergeant at Arms</option>
+              <option value="The Enforcer">The Enforcer</option>
+              <option value="The Road Captain">The Road Captain</option>
+              <option value="The Business Director">The Business Director</option>
+              <option value="The Treasurer">The Treasurer</option>
+              <option value="The Tail Gunner">The Tail Gunner</option>
+              <option value="The Originally">The Originally</option>
+            </select>
+
+            <select id="filter-anggota-status" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
+              <option value="ALL">Semua Status</option>
+              <option value="AKTIF">AKTIF</option>
+              <option value="TIDAK AKTIF/CUTI">TIDAK AKTIF / CUTI</option>
+            </select>
+          </div>
+
+          <!-- Organization Table matching Image 4 -->
+          <div class="tiger-card bg-white overflow-hidden border border-slate-200">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#1b4d3e] text-white text-[11px] font-bold uppercase tracking-wider">
+                    <th class="excel-th text-center">NO</th>
+                    <th class="excel-th">NAMA</th>
+                    <th class="excel-th text-center">TANGGAL JOIN</th>
+                    <th class="excel-th text-center">PENANGGUNG JAWAB</th>
+                    <th class="excel-th">JABATAN</th>
+                    <th class="excel-th text-center">STATUS</th>
+                    <th class="excel-th">KETERANGAN</th>
+                    <th class="excel-th text-center">TANGGAL CUTI</th>
+                    <th class="excel-th text-center">AKTIF KEMBALI</th>
+                    <th class="excel-th text-right">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="anggota-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered by js/anggota.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 6: ARSIP BERKAS & MEDIA ==================== -->
+        <section id="view-assets" class="view-section hidden space-y-6">
+          
+          <div class="tiger-card p-6 bg-white">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                  <i data-lucide="cloud-upload" class="w-5 h-5 text-[#0570e9]"></i>
+                  Upload Dokumen & Arsip Organisasi
+                </h3>
+                <p class="text-xs text-slate-500">Upload laporan pertambangan, invoice, screenshot, atau dokumen pembukuan</p>
+              </div>
+            </div>
+
+            <div id="upload-dropzone" class="dropzone p-8 text-center cursor-pointer relative">
+              <input type="file" id="file-input" class="hidden" />
+
+              <div id="dropzone-idle-content" class="space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 text-[#0570e9] mx-auto flex items-center justify-center">
+                  <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">
+                    Tarik file ke sini, atau <button type="button" id="browse-files-btn" class="text-[#0570e9] hover:underline font-bold">pilih dari komputer</button>
+                  </p>
+                  <p class="text-xs text-slate-400 mt-1">Mendukung PDF, DOCX, XLSX, PNG, JPG</p>
+                </div>
+              </div>
+
+              <!-- Upload Preview Form -->
+              <div id="upload-preview-container" class="hidden text-left space-y-4">
+                <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-blue-200">
+                  <div id="preview-file-icon"></div>
+                  <div class="flex-1 min-w-0">
+                    <h4 id="preview-file-name" class="font-semibold text-xs text-slate-900 truncate">file.pdf</h4>
+                    <p id="preview-file-size" class="text-[11px] text-slate-400 font-mono">2.4 MB</p>
+                  </div>
+                  <button type="button" id="cancel-upload-btn" class="text-xs text-slate-400 hover:text-rose-600 px-2 py-1">
+                    Batal
+                  </button>
+                </div>
+
+                <form id="upload-metadata-form" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Dokumen *</label>
+                    <input type="text" id="upload-title" required
+                      class="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:border-[#0570e9] outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori</label>
+                    <select id="upload-category" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-white">
+                      <option value="Documents">Documents</option>
+                      <option value="Images">Images</option>
+                      <option value="Spreadsheets">Spreadsheets</option>
+                    </select>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi</label>
+                    <textarea id="upload-desc" rows="2" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 outline-none"></textarea>
+                  </div>
+
+                  <div id="upload-progress-container" class="sm:col-span-2 hidden">
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div id="upload-progress-bar" class="h-full bg-[#0570e9] transition-all duration-100" style="width: 0%"></div>
+                    </div>
+                  </div>
+
+                  <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
+                    <button type="submit" id="submit-upload-btn"
+                      class="px-5 py-2.5 bg-[#0570e9] hover:bg-[#045bbd] text-white text-xs font-semibold rounded-xl flex items-center gap-1.5">
+                      <i data-lucide="check" class="w-4 h-4"></i>
+                      <span>Konfirmasi Upload</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Existing Assets Grid -->
+          <div id="items-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Rendered by js/items.js -->
+          </div>
+
+        </section>
+
+        <!-- ==================== VIEW 7: TARIF & PENGATURAN SISTEM ==================== -->
+        <section id="view-settings" class="view-section hidden space-y-6">
+          
+          <div class="tiger-card p-6 bg-white max-w-2xl">
+            <div class="mb-6 pb-4 border-b border-slate-100">
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-5 h-5 text-[#0570e9]"></i>
+                Konfigurasi Tarif Gaji & Pembagian Kas
+              </h2>
+              <p class="text-xs text-slate-500">Sesuaikan nominal tarif per unit komoditas yang berlaku dalam formula perhitungan otomatis</p>
+            </div>
+
+            <form id="rates-settings-form" class="space-y-4">
+              
+              <div class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-3">
+                <div class="font-bold text-xs text-[#0570e9] flex items-center gap-1.5">
+                  <i data-lucide="coins" class="w-4 h-4"></i>
+                  <span>Komoditas Uang Bersih</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Batu Mentah (per 100 pcs / 1 Paket)</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                      <input type="number" id="rate-batu-mentah" step="0.5" required
+                        class="w-full text-xs pl-7 p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Emas (per 1 pcs)</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                      <input type="number" id="rate-emas" step="0.1" required
+                        class="w-full text-xs pl-7 p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tembaga (per 1 pcs)</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                      <input type="number" id="rate-tembaga" step="0.1" required
+                        class="w-full text-xs pl-7 p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Besi (per 1 pcs)</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                      <input type="number" id="rate-besi" step="0.1" required
+                        class="w-full text-xs pl-7 p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-sky-50/50 rounded-xl border border-sky-100 space-y-2">
+                <div class="font-bold text-xs text-sky-800 flex items-center gap-1.5">
+                  <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-sky-600"></i>
+                  <span>Komoditas Uang ROC</span>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Bluni Kantor (per 1 pcs)</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                    <input type="number" id="rate-bluni" step="0.1" required
+                      class="w-full text-xs pl-7 p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+                  </div>
+                  <span class="text-[11px] text-slate-400">Gaji Bluni dibayarkan dalam mata uang ROC</span>
+                </div>
+              </div>
+
+              <div class="pt-2 flex justify-end">
+                <button type="submit"
+                  class="px-5 py-2.5 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-md shadow-blue-500/20">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  <span>Simpan Perubahan Tarif</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- MODAL 1: INPUT / EDIT SETORAN ANGGOTA -->
+  <div id="modal-setoran" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-content bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
+        <h3 id="modal-setoran-title" class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i data-lucide="calculator" class="w-4 h-4 text-[#0570e9]"></i>
+          Input Data Setoran Anggota
+        </h3>
+        <button data-close-modal="modal-setoran" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="setoran-modal-form" class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Anggota</label>
+          <select id="select-nama-anggota" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-white font-semibold outline-none focus:border-[#0570e9]">
+            <!-- Rendered dynamically -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Batu Mentah (Paket = 100 pcs)</label>
+            <input type="number" id="input-batu-mentah" min="0" value="0"
+              class="w-full text-xs p-2.5 rounded-lg border border-slate-200 font-mono focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Emas (pcs)</label>
+            <input type="number" id="input-emas" min="0" value="0"
+              class="w-full text-xs p-2.5 rounded-lg border border-slate-200 font-mono focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tembaga (pcs)</label>
+            <input type="number" id="input-tembaga" min="0" value="0"
+              class="w-full text-xs p-2.5 rounded-lg border border-slate-200 font-mono focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Besi (pcs)</label>
+            <input type="number" id="input-besi" min="0" value="0"
+              class="w-full text-xs p-2.5 rounded-lg border border-slate-200 font-mono focus:border-[#0570e9] outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-sky-800 mb-1">Bluni Kantor (pcs)</label>
+            <input type="number" id="input-bluni" min="0" value="0"
+              class="w-full text-xs p-2.5 rounded-lg border border-sky-300 bg-sky-50/40 font-mono focus:border-sky-500 outline-none"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Status Setoran</label>
+            <select id="select-status-setoran" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-white font-semibold">
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="BELUM SETORAN">BELUM SETORAN</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Calculation Box -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Total Setoran Fisik:</span>
+            <span id="preview-total-pcs" class="font-mono font-bold text-slate-800">0 pcs</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-emerald-700 font-medium">Gaji Bersih (Batu+Emas+Tembaga+Besi):</span>
+            <span id="preview-gaji-bersih" class="font-mono font-bold text-emerald-700">$0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-sky-700 font-medium">Gaji ROC (Bluni):</span>
+            <span id="preview-gaji-roc" class="font-mono font-bold text-sky-700">$0</span>
+          </div>
+          <div class="flex justify-between pt-1 border-t text-slate-900 font-bold">
+            <span>Format Tampilan Gaji:</span>
+            <span id="preview-gaji-display" class="font-mono text-[#0570e9]">$0 & $0</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" data-close-modal="modal-setoran" class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-lg text-xs font-semibold shadow-md shadow-blue-500/20">
+            Simpan Setoran
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL 2: SLIP GAJI / BUKTI PEMBAYARAN -->
+  <div id="modal-slip-gaji" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="flex items-center justify-between p-3 border-b border-slate-100 bg-slate-50">
+        <span class="font-bold text-xs text-slate-700">Slip Penggajian Resmi</span>
+        <button data-close-modal="modal-slip-gaji" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="slip-modal-content" class="p-4">
+        <!-- Rendered by js/penggajian.js -->
+      </div>
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+        <button onclick="window.print()" class="px-4 py-1.5 bg-[#0570e9] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Cetak Dokumen</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TRANSAKSI BRANGKAS ROC -->
+  <div id="modal-brangkas" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-teal-50">
+        <h3 class="font-bold text-sm text-teal-900 flex items-center gap-2">
+          <i data-lucide="wallet" class="w-4 h-4 text-teal-600"></i>
+          Tambah Mutasi Kas Brangkas ROC
+        </h3>
+        <button data-close-modal="modal-brangkas" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="brangkas-modal-form" class="p-5 space-y-3.5">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal</label>
+            <input type="text" id="input-trx-tanggal" required
+              class="w-full text-xs p-2 rounded-lg border border-slate-200 font-mono"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pelaku</label>
+            <select id="select-trx-nama" class="w-full text-xs p-2 rounded-lg border border-slate-200 bg-white">
+              <!-- Rendered dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Aktivitas / Keterangan</label>
+          <input type="text" id="input-trx-aktivitas" required placeholder="e.g. Pembelian logistik senjata HCMC"
+            class="w-full text-xs p-2 rounded-lg border border-slate-200 outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe Transaksi</label>
+            <select id="select-trx-tipe" class="w-full text-xs p-2 rounded-lg border border-slate-200 bg-white font-semibold">
+              <option value="MASUK">MASUK (+)</option>
+              <option value="KELUAR">KELUAR (-)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nominal ($ ROC)</label>
+            <input type="number" id="input-trx-nominal" min="1" step="10" required
+              class="w-full text-xs p-2 rounded-lg border border-slate-200 font-mono font-bold"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Action</label>
+            <select id="select-trx-action" class="w-full text-xs p-2 rounded-lg border border-slate-200 bg-white font-semibold">
+              <option value="SETORAN">SETORAN</option>
+              <option value="PENJUALAN">PENJUALAN</option>
+              <option value="PEMBELIAN">PEMBELIAN</option>
+              <option value="REWARD">REWARD</option>
+              <option value="ACTIVITY">ACTIVITY</option>
+              <option value="GAJI">GAJI</option>
+              <option value="CUCI UANG">CUCI UANG</option>
+              <option value="TANPA KET.">TANPA KET.</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Badside Eksternal</label>
+            <input type="text" id="input-trx-badside" placeholder="e.g. HCMC"
+              class="w-full text-xs p-2 rounded-lg border border-slate-200"/>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" data-close-modal="modal-brangkas" class="px-4 py-2 border rounded-lg text-xs font-semibold text-slate-600">Batal</button>
+          <button type="submit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-semibold">Simpan Mutasi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: TAMBAH / EDIT ANGGOTA ORGANISASI -->
+  <div id="modal-anggota" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
+        <h3 id="modal-anggota-title" class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4 text-[#0570e9]"></i>
+          Data Anggota Organisasi
+        </h3>
+        <button data-close-modal="modal-anggota" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="anggota-modal-form" class="p-5 space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap *</label>
+          <input type="text" id="input-anggota-nama" required
+            class="w-full text-xs p-2 rounded-lg border border-slate-200 outline-none focus:border-[#0570e9]"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Join</label>
+            <input type="date" id="input-anggota-join"
+              class="w-full text-xs p-2 rounded-lg border border-slate-200"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Penanggung Jawab</label>
+            <input type="text" id="input-anggota-pj" placeholder="-"
+              class="w-full text-xs p-2 rounded-lg border border-slate-200"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jabatan Resmi</label>
+            <select id="select-anggota-jabatan" class="w-full text-xs p-2 rounded-lg border border-slate-200 bg-white font-semibold">
+              <option value="PRESIDEN">PRESIDEN</option>
+              <option value="VICE PRESIDEN">VICE PRESIDEN</option>
+              <option value="The Sergeant at Arms">The Sergeant at Arms</option>
+              <option value="The Enforcer">The Enforcer</option>
+              <option value="The Road Captain">The Road Captain</option>
+              <option value="The Business Director">The Business Director</option>
+              <option value="The Treasurer">The Treasurer</option>
+              <option value="The Tail Gunner">The Tail Gunner</option>
+              <option value="The Originally">The Originally</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Status Keaktifan</label>
+            <select id="select-anggota-status" class="w-full text-xs p-2 rounded-lg border border-slate-200 bg-white font-semibold">
+              <option value="AKTIF">AKTIF</option>
+              <option value="TIDAK AKTIF/CUTI">TIDAK AKTIF / CUTI</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Keterangan / Alasan</label>
+          <input type="text" id="input-anggota-ket" placeholder="e.g. SAMPE BELI PC / DINAS DI LUAR KOTA"
+            class="w-full text-xs p-2 rounded-lg border border-slate-200"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Cuti</label>
+            <input type="text" id="input-anggota-cuti" placeholder="DD/MM/YYYY"
+              class="w-full text-xs p-2 rounded-lg border border-slate-200 font-mono"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Aktif Kembali</label>
+            <input type="text" id="input-anggota-kembali" placeholder="DD/MM/YYYY"
+              class="w-full text-xs p-2 rounded-lg border border-slate-200 font-mono"/>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" data-close-modal="modal-anggota" class="px-4 py-2 border rounded-lg text-xs font-semibold text-slate-600">Batal</button>
+          <button type="submit" class="px-5 py-2 bg-[#0570e9] hover:bg-[#045bbd] text-white rounded-lg text-xs font-semibold">Simpan Anggota</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Scripts Orchestration -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/penggajian.js"></script>
+  <script src="js/brangkas.js"></script>
+  <script src="js/monitoring.js"></script>
+  <script src="js/anggota.js"></script>
+  <script src="js/upload.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

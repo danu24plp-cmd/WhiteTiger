@@ -1,0 +1,336 @@
+/* ==========================================================================
+   White Tiger Dashboard - Core Theme & Custom Styles
+   Colors: Pure White (#ffffff) & Royal Electric Blue (#0570e9)
+   Custom Badges for Roles, Attendance, and Financial Vault
+   ========================================================================== */
+
+:root {
+  --color-primary: #0570e9;
+  --color-primary-hover: #045bbd;
+  --color-primary-light: #e8f2fe;
+  --color-primary-tint: rgba(5, 112, 233, 0.08);
+  --color-primary-glow: rgba(5, 112, 233, 0.25);
+  --color-bg: #ffffff;
+  --color-surface: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0570e9;
+}
+
+/* Brand styling */
+.brand-blue {
+  color: #0570e9;
+}
+.bg-brand-blue {
+  background-color: #0570e9;
+}
+.bg-brand-blue:hover {
+  background-color: #045bbd;
+}
+.bg-brand-light {
+  background-color: #e8f2fe;
+}
+.border-brand {
+  border-color: #0570e9;
+}
+.ring-brand:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(5, 112, 233, 0.35);
+}
+
+/* Cards & Elevations */
+.tiger-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tiger-card:hover {
+  border-color: rgba(5, 112, 233, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(5, 112, 233, 0.08), 0 8px 10px -6px rgba(5, 112, 233, 0.04);
+}
+
+.tiger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+.tiger-badge-primary {
+  background-color: #e8f2fe;
+  color: #0570e9;
+  border: 1px solid rgba(5, 112, 233, 0.2);
+}
+.tiger-badge-admin {
+  background: linear-gradient(135deg, #0570e9, #02438e);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(5, 112, 233, 0.35);
+}
+
+/* ==================== ORGANIZATIONAL ROLE BADGES ==================== */
+.badge-role-presiden {
+  background-color: #fef08a;
+  color: #854d0e;
+  border: 1px solid #facc15;
+  font-weight: 700;
+}
+.badge-role-vice-presiden {
+  background-color: #bae6fd;
+  color: #0369a1;
+  border: 1px solid #38bdf8;
+  font-weight: 700;
+}
+.badge-role-sergeant {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-enforcer {
+  background-color: #991b1b;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-road-captain {
+  background-color: #334155;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-director {
+  background-color: #166534;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-treasurer {
+  background-color: #d97706;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-tail-gunner {
+  background-color: #78350f;
+  color: #ffffff;
+  font-weight: 700;
+}
+.badge-role-originally {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  font-weight: 600;
+}
+
+/* ==================== STATUS SETORAN & AKTIF BADGES ==================== */
+.badge-status-completed {
+  background-color: #166534;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  display: inline-block;
+  text-align: center;
+}
+.badge-status-belum {
+  background-color: #991b1b;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  display: inline-block;
+  text-align: center;
+}
+.badge-status-aktif {
+  background-color: #166534;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+}
+.badge-status-cuti {
+  background-color: #991b1b;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+}
+
+/* ==================== ROC VAULT ACTION BADGES ==================== */
+.badge-action-penjualan {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+.badge-action-pembelian {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fdba74;
+}
+.badge-action-reward {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+.badge-action-activity {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
+}
+.badge-action-gaji {
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border: 1px solid #7dd3fc;
+}
+.badge-action-cuci-uang {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+.badge-action-setoran {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+.badge-action-tanpa-ket {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+/* Nav links */
+.nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.nav-tab:hover {
+  background-color: #f1f5f9;
+  color: #0570e9;
+}
+.nav-tab.active {
+  background-color: #e8f2fe;
+  color: #0570e9;
+  font-weight: 600;
+  border-color: rgba(5, 112, 233, 0.25);
+}
+
+/* Drag & Drop Zone */
+.dropzone {
+  border: 2px dashed #93c5fd;
+  border-radius: 16px;
+  background-color: #f8fafc;
+  transition: all 0.2s ease-in-out;
+}
+.dropzone.dragover {
+  border-color: #0570e9;
+  background-color: #e8f2fe;
+  transform: scale(1.008);
+}
+
+/* Modal Animations */
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+.modal-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-content {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-backdrop.show .modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Role Switcher */
+.role-switch-container {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 3px;
+  display: inline-flex;
+}
+.role-switch-btn {
+  padding: 4px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  color: #64748b;
+  cursor: pointer;
+}
+.role-switch-btn.active {
+  background: #0570e9;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(5, 112, 233, 0.4);
+}
+
+@keyframes tiger-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(5, 112, 233, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(5, 112, 233, 0);
+  }
+}
+.admin-glow {
+  animation: tiger-pulse 2.2s infinite;
+}
+
+/* Compact Table Headers matching Excel reference */
+.excel-th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+.excel-td {
+  font-size: 12px;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
