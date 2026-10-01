@@ -1,0 +1,17 @@
+# Task List – Firebase Migration & Inventory System
+
+- [/] Buat firebase-config.js (placeholder konfigurasi)
+- [ ] Buat js/firebase.js (inisialisasi Firebase App, Firestore, Auth)
+- [ ] Buat js/firestoreService.js (CRUD wrapper semua koleksi)
+- [ ] Update js/auth.js (GitHub Auth)
+- [ ] Buat js/inventory.js (Berangkas Bahan & Senjata)
+- [ ] Update index.html (tambah script Firebase CDN, tab Berangkas, hapus localStorage)
+- [ ] Update js/app.js (integrasi Firestore & inventory module)
+- [ ] Update js/penggajian.js (gunakan firestoreService)
+- [ ] Update js/brangkas.js (gunakan firestoreService)
+- [ ] Update js/monitoring.js (gunakan firestoreService)
+- [ ] Update js/anggota.js (gunakan firestoreService)
+- [ ] Buat firebase.json (Firebase Hosting config)
+- [ ] Buat .firebaserc (project alias)
+- [ ] Buat firestore.rules (aturan keamanan pengujian)
+- [ ] Buat README.md (petunjuk setup Firebase & deploy)

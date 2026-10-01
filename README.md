@@ -1,87 +1,104 @@
-# 🐅 White Tiger Dashboard
+# 🐯 WHITE TIGER DASHBOARD - SISTEM BERANGKAS & DATABASE SQL ONLINE
 
-An enterprise digital asset management & administration dashboard designed with a pure white background (`#ffffff`) and electric royal blue (`#0570e9`) accents.
-
----
-
-## 🚀 Quick Start
-
-You can open the dashboard in several ways:
-
-1. **Double-click** `index.html` directly in File Explorer.
-2. **Right-click** `start-dashboard.ps1` and select **Run with PowerShell**, or run in terminal:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\start-dashboard.ps1
-   ```
+Dashboard Enterprise untuk Manajemen Aset, Keuangan ROC, Penggajian Tambang, serta **Berangkas Bahan & Persenjataan** dengan sinkronisasi database SQL multi-user secara online.
 
 ---
 
-### 🔐 Authentication & Security Suite
-- **Secure Login**:
-  - Email & password authentication with password reveal/hide toggle.
-  - One-click demo credentials for instant testing:
-    - **Admin**: `admin@whitetiger.internal` (Password: `admin123`)
-    - **User**: `alex@whitetiger.internal` (Password: `tiger123`)
-  - "Remember me" device session storage.
-- **Log Out**:
-  - One-click sign-out button in the top navigation bar.
-  - Automatically clears active session, records `LOGOUT` to audit logs, and redirects to the sign-in screen.
-- **Forgot Password**:
-  - Two-step recovery workflow:
-    - **Step 1**: Enter email to request a 6-digit verification code (demo recovery code is automatically generated and displayed).
-    - **Step 2**: Enter verification code, set and confirm new password with validation.
-  - Immediately logs `PASSWORD_RESET` to the audit trail and returns to sign-in with prefilled email.
-- **Upload**: Drag & drop or browse files (PDF, images, spreadsheets, archives, code). Includes auto-category classification, tag assignment, description, and client-side Base64 preview generation.
-- **Edit**: Inline/modal editing of title, categories, status, tags, and description.
-- **Delete**: Remove uploaded items with a confirmation safety prompt.
-- **Search & Filter**: Real-time keyword search, category pills (All, Documents, Images, Spreadsheets, Archives), and sorting (Newest, Oldest, Name, Size).
-- **View Modes**: Switch between high-density **Grid View** (with thumbnail previews) and structured **Table View**.
-- **Download**: Instant export/download of stored assets.
+## ❓ Mengapa Sebelumnya Data Tidak Tersinkron di GitHub?
 
-### 🛡️ Administrator
-- **Role Switcher**: Click **"User"** or **"Admin"** in the top navigation bar at any time to preview and test the dashboard from both perspectives.
-- **User Management**:
-  - View all team members and active status.
-  - Dynamically promote/demote members between **User** and **Admin**.
-  - Add new team members.
-  - Suspend or permanently delete user accounts.
-- **Audit Logs**:
-  - Real-time audit trail capturing all file uploads, modifications, deletions, role switches, and administrative actions.
-  - Filter logs by action type (`UPLOAD`, `EDIT`, `DELETE`, `ROLE_UPDATE`, `ROLE_SWITCH`).
-  - One-click **Export to CSV** for compliance reporting.
-- **Global Moderation**: Admin can view, edit, or delete any asset uploaded by any user.
-- **System Settings**:
-  - Set storage quota limits (MB).
-  - Configure maximum file upload sizes.
-  - Toggle auto-approval workflow for uploaded content.
+Ketika Anda meng-upload ke **GitHub Pages**, GitHub hanya menyajikan file tampilan statis (HTML, CSS, JS). 
+Sebelumnya, sistem menyimpan data di `localStorage` (penyimpanan internal browser). Akibatnya:
+- Ketika **Pengguna A** menambahkan data di HP/laptopnya, data tersebut hanya tersimpan di memori HP Pengguna A.
+- **Pengguna B** tidak bisa melihatnya karena tidak ada server / database SQL perantara di internet yang menghubungkan mereka.
 
 ---
 
-## 🎨 Design Palette
+## 🚀 Dua Cara Agar Data Tersinkronisasi Antar Pengguna Secara Online
 
-- **Background**: `#ffffff` (pure clean white)
-- **Primary Brand Accent**: `#0570e9` (electric royal blue)
-- **Hover Accent**: `#045bbd`
-- **Soft Tint / Chip Backgrounds**: `#e8f2fe`
-- **Surface Contrast**: `#f8fafc`
-- **Typography**: Inter (Google Fonts)
+Kami telah menyediakan **2 solusi terbaik**:
 
 ---
 
-## 📁 Directory Structure
+### Solusi 1: Menggunakan Database SQL Supabase (PostgreSQL Cloud) — *Sangat Direkomendasikan untuk GitHub Pages!*
 
-```
-white-tiger-dashboard/
-├── index.html            # Main dashboard HTML5 markup
-├── css/
-│   └── styles.css        # Theme styles, scrollbars, animations, and color tokens
-├── js/
-│   ├── app.js            # Main controller, charts, metrics, role switcher, toasts
-│   ├── auth.js           # Login, Logout, Forgot Password, session guard
-│   ├── storage.js        # LocalStorage persistence & seed dataset
-│   ├── items.js          # File rendering, search/filter, edit modal, delete flow
-│   ├── upload.js         # Drag & drop upload handler, file reader & validation
-│   └── admin.js          # User management, audit logs, and settings
-├── start-dashboard.ps1   # Quick launcher script
-└── README.md             # Documentation
-```
+Solusi ini membuat dashboard di **GitHub Pages** Anda langsung terhubung ke database **SQL (PostgreSQL)** di cloud secara gratis dan memiliki fitur **Realtime Sync**. Begitu Pengguna A klik *Deposit*, detik itu juga data di layar Pengguna B langsung bertambah tanpa perlu refresh!
+
+#### Langkah Setup (Hanya 3 Menit):
+1. **Daftar Akun Supabase (Gratis)**:
+   - Kunjungi [https://supabase.com](https://supabase.com) dan klik **Start your project** (bisa login menggunakan akun GitHub Anda).
+2. **Buat Proyek Baru**:
+   - Klik **New project**, beri nama (misal: `white-tiger`), tentukan password database, dan pilih Region terdekat (misal: `Singapore`).
+3. **Jalankan Skrip SQL**:
+   - Di dashboard Supabase, buka menu **SQL Editor** (ikon terminal di sidebar kiri).
+   - Klik **New query**, lalu salin seluruh isi file [`schema.sql`](schema.sql) dan tempel ke editor tersebut.
+   - Klik tombol **Run** (Ctrl+Enter). Semua tabel (`materials`, `weapons`, `inventory_logs`, `members`, `setoran`, `brangkas`, `rates`) akan langsung terbentuk otomatis!
+4. **Salin API Keys ke Dashboard**:
+   - Buka menu **Project Settings** (ikon gerigi) > **API**.
+   - Salin **Project URL** dan **anon public key**.
+   - Buka file `supabase-config.js` di project ini, lalu masukkan:
+     ```javascript
+     const SUPABASE_CONFIG = {
+       url: "https://xyzcompany.supabase.co",   // ← Ganti dengan Project URL Anda
+       anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI..." // ← Ganti dengan anon public key Anda
+     };
+     ```
+5. **Push ke GitHub**:
+   - Commit & push file yang telah diperbarui ke repository GitHub Anda.
+   - Buka link GitHub Pages Anda. Sekarang **seluruh pengguna di seluruh dunia membaca dan menulis ke database SQL yang sama secara realtime!**
+
+---
+
+### Solusi 2: 1-Klik Online via Cloudflare Tunnel (Tanpa Setup Akun Cloud)
+
+Jika Anda ingin menjalankan database dari komputer ini dan langsung membagikan link ke teman/anggota lain:
+
+1. Buka folder dashboard di komputer.
+2. Klik kanan file **`start-online.ps1`** > pilih **Run with PowerShell** (atau jalankan `.\start-online.ps1` di terminal).
+3. Script akan otomatis:
+   - Menjalankan backend server database lokal (`server.ps1`).
+   - Menghubungkan ke Cloudflare Quick Tunnel untuk membuat tautan online HTTPS publik yang aman (contoh: `https://xxxx.trycloudflare.com`).
+4. **Salin link tersebut dan bagikan ke WhatsApp / Discord!** Siapapun yang membuka link tersebut akan mengakses database terpusat yang sama.
+
+---
+
+## 📦 Fitur Berangkas Bahan & Senjata
+
+Akses menu **"Berangkas Bahan & Senjata"** di sidebar dashboard:
+
+1. **Rekapitulasi 4 KPI**:
+   - **Total Nilai Bahan**: Akumulasi nilai stok bahan tambang dalam mata uang USD.
+   - **Total Nilai Senjata**: Akumulasi nilai persenjataan.
+   - **Grand Total Aset**: Total gabungan seluruh aset di berangkas.
+   - **Status Sinkronisasi Multi-User**: Menampilkan status koneksi database SQL realtime.
+
+2. **Berangkas Bahan Tambang & Material**:
+   - Mencatat stok: Batu Mentah, Emas Murni, Tembaga, Besi Batangan, Bluni Kantor, Bubuk Mesiu, dsb.
+   - Tombol **Ambil**: Melakukan withdraw dengan validasi stok agar tidak bisa minus.
+   - Tombol **Tambah**: Melakukan deposit penambahan stok.
+   - Tombol **Hapus**: Menghapus item dari daftar berangkas.
+
+3. **Berangkas Persenjataan**:
+   - Mencatat persenjataan: Combat Pistol, AP Pistol, SMG Gusenberg, Heavy Rifle, Pump Shotgun, dsb.
+   - Menampilkan kategori (Handgun, SMG, Assault Rifle, Shotgun) dan kondisi barang (Baik/Baru).
+   - Deposit & Withdraw persenjataan.
+
+4. **Riwayat Log Mutasi**:
+   - Setiap transaksi deposit maupun withdraw otomatis dicatat lengkap dengan tanggal, jam, jenis barang, jumlah, dan nama petugas.
+
+---
+
+## 🗄️ Struktur Database SQL (`schema.sql`)
+
+| Nama Tabel | Deskripsi |
+|---|---|
+| `materials` | Data stok bahan, satuan, harga per unit, dan total nilai. |
+| `weapons` | Data stok senjata, kategori, kondisi, harga, dan total nilai. |
+| `inventory_logs` | Riwayat transaksi mutasi masuk (deposit) dan keluar (withdraw). |
+| `members` | Struktur organisasi dan anggota White Tiger (36 anggota). |
+| `setoran` | Rekapitulasi setoran tambang & kalkulasi gaji uang bersih + uang ROC. |
+| `brangkas` | Mutasi kas uang ROC organisasi. |
+| `rates` | Kurs resmi konversi gaji. |
+
+---
+
+*White Tiger Dashboard - Enterprise Multi-User SQL Edition*

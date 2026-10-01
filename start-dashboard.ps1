@@ -1,21 +1,25 @@
 # ==============================================================================
 # White Tiger Dashboard - Launcher Script
-# Opens index.html in the default system browser
+# Menjalankan Server Lokal & Membuka Dashboard di Browser
 # ==============================================================================
 
 $CurrentDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$IndexPath = Join-Path $CurrentDir "index.html"
+if (-not $CurrentDir) { $CurrentDir = Get-Location }
 
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "       WHITE TIGER DASHBOARD" -ForegroundColor White
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "Theme: Pure White & Royal Blue (#0570e9)" -ForegroundColor Gray
-Write-Host "Path:  $IndexPath" -ForegroundColor Gray
+Write-Host "Lokasi: $CurrentDir" -ForegroundColor Gray
 Write-Host ""
 
-if (Test-Path $IndexPath) {
-    Write-Host "Launching White Tiger Dashboard in your default browser..." -ForegroundColor Green
-    Start-Process $IndexPath
-} else {
-    Write-Host "Error: index.html not found in $CurrentDir" -ForegroundColor Red
-}
+$serverScript = Join-Path $CurrentDir "server.ps1"
+
+# Jalankan server lokal di background
+Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -NoProfile -File `"$serverScript`" -Port 8080" -WindowStyle Hidden
+Start-Sleep -Seconds 1
+
+Write-Host "Membuka White Tiger Dashboard..." -ForegroundColor Green
+Start-Process "http://localhost:8080"
+
+Write-Host "Dashboard aktif di: http://localhost:8080" -ForegroundColor Cyan
+Write-Host "Untuk mengonlinekan agar bisa diakses orang lain, jalankan: .\start-online.ps1" -ForegroundColor Yellow

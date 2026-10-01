@@ -10,8 +10,15 @@ window.App = {
   chartBadside: null,
   chartKeuntungan: null,
 
-  init() {
+  async init() {
     StorageService.init();
+
+    if (window.ApiService) {
+      await ApiService.init();
+    }
+    if (window.SqlService) {
+      await SqlService.init();
+    }
 
     this.bindNavigation();
     this.bindRoleSwitcher();
@@ -25,6 +32,10 @@ window.App = {
     AnggotaModule.init();
     ItemsModule.init();
     UploadModule.init();
+
+    if (window.InventoryModule) {
+      await InventoryModule.init();
+    }
 
     // Init Charts
     this.initFinancialCharts();
