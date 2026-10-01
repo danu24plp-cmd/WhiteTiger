@@ -10,6 +10,6 @@
  */
 
 const SUPABASE_CONFIG = {
-  url: "https://xyzcompany.supabase.co",   // ← Ganti dengan Project URL Anda
-  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI..." // ← Ganti dengan anon public key Anda
+  url: "https://ivqqvvukctwvbanurxko.supabase.co/rest/v1/",   // ← Ganti dengan Project URL Anda
+  anonKey: "sb_publishable_Wh7adkAbFrgwvmPOotAwfw_LT3gVDEV" // ← Ganti dengan anon public key Anda
 };
