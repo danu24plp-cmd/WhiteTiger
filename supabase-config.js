@@ -10,6 +10,6 @@
  */
 
 const SUPABASE_CONFIG = {
-  url: "YOUR_SUPABASE_PROJECT_URL",       // Contoh: "https://xyzcompany.supabase.co"
-  anonKey: "YOUR_SUPABASE_ANON_KEY"       // Contoh: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  url: "https://xyzcompany.supabase.co",   // ← Ganti dengan Project URL Anda
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI..." // ← Ganti dengan anon public key Anda
 };
